@@ -8,11 +8,13 @@ from schemas import PostSchema, PostWithUserSchema
 from models.post_model import PostModel
 from db import users, posts
 
-
+from flask_jwt_extended import jwt_required
 
 @bp.route('/post/')
 class PostList(MethodView):
-    
+
+    @jwt_required()
+
     @bp.arguments(PostWithUserSchema)
     @bp.response(201, PostWithUserSchema)
 
@@ -66,7 +68,7 @@ class Post(MethodView):
 
     def delete(self, post_id):
 
-        post =PostModel.query.get(post_id)
+        post = PostModel.query.get(post_id)
         if not post:
             abort(400, message = "post not found")
         post.delete_post()
